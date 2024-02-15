@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=sqlite:///db.sqlite3
+    networks:
+      - backend
+
+  db:
+    image: sqlite:latest
+    volumes:
+      - ./data:/var/lib/sqlite
+    networks:
+      - backend
+
+#  frontend:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ./frontend:/app
+#    networks:
+#      - backend
+
+networks:
+  backend:
+    driver: bridge
